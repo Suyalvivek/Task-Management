@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Prevent indexing of internal routes (optional, adjust as needed)
+# Disallow: /dashboard
+# Disallow: /projects
+
+Sitemap: https://your-deployment-url.up.railway.app/sitemap.xml
