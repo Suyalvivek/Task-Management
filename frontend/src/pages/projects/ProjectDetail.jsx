@@ -9,6 +9,7 @@ import TaskCard from '../../components/TaskCard';
 import MemberList from '../../components/MemberList';
 import { projectApi } from '../../api/projectApi';
 import { taskApi } from '../../api/taskApi';
+import { authApi } from '../../api/authApi';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Plus, UserPlus, ArrowLeft, CheckSquare } from 'lucide-react';
@@ -20,6 +21,7 @@ export default function ProjectDetail() {
 
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showMemberModal, setShowMemberModal] = useState(false);
@@ -39,9 +41,11 @@ export default function ProjectDetail() {
     Promise.all([
       projectApi.getById(projectId),
       taskApi.getAll(projectId),
-    ]).then(([pRes, tRes]) => {
+      authApi.getAllUsers(),
+    ]).then(([pRes, tRes, uRes]) => {
       setProject(pRes.data);
       setTasks(tRes.data);
+      setAllUsers(uRes.data);
     }).catch(() => toast.error('Failed to load project'))
     .finally(() => setLoading(false));
   }, [projectId]);
@@ -96,6 +100,7 @@ export default function ProjectDetail() {
   };
 
   const members = project?.members || [];
+  const availableUsers = allUsers.filter(u => !members.some(m => m.user.id === u.id));
 
   if (loading) return (
     <AppLayout title="Loading...">
@@ -260,20 +265,22 @@ export default function ProjectDetail() {
           }
         >
           <div className="form-group">
-            <label className="form-label" htmlFor="member-email">Member Email</label>
-            <input
+            <label className="form-label" htmlFor="member-email">Select User</label>
+            <select
               id="member-email"
-              type="email"
               className={`form-input ${memberError ? 'error' : ''}`}
-              placeholder="colleague@company.com"
               value={memberEmail}
               onChange={e => { setMemberEmail(e.target.value); setMemberError(''); }}
-              onKeyDown={e => e.key === 'Enter' && onAddMember()}
-            />
+            >
+              <option value="">-- Choose a user --</option>
+              {availableUsers.map(u => (
+                <option key={u.id} value={u.email}>{u.name} ({u.email})</option>
+              ))}
+            </select>
             {memberError ? (
               <p className="form-error" style={{ marginTop: 4, color: 'var(--error)' }}>{memberError}</p>
             ) : (
-              <p className="text-muted text-sm" style={{ marginTop: 4 }}>User must already have an account</p>
+              <p className="text-muted text-sm" style={{ marginTop: 4 }}>Select a user from the system to add to the project</p>
             )}
           </div>
         </Modal>

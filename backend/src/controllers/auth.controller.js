@@ -84,4 +84,16 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, getMe };
+// GET /api/auth/users
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: { id: true, name: true, email: true },
+    });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+module.exports = { signup, login, getMe, getAllUsers };
