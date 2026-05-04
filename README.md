@@ -80,4 +80,4 @@ npm run dev
 3. **Frontend:** Deploy the `frontend` directory to Railway. Set `VITE_API_URL` to your newly deployed backend URL. Change the build command to `npm run build` and ensure the output directory is configured correctly for Vite (`dist`).
 
 ## 🎥 Demo Video
-[Link to your 2-5 minute demo video goes here]
+[Watch the 2-5 minute demo video on YouTube](https://youtu.be/F8zPJn-p6SQ)
