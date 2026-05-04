@@ -32,7 +32,7 @@ TaskFlow is a full-stack, role-based collaborative task management web applicati
 
 ### 1. Clone the repository
 ```bash
-git clone <your-github-repo-url>
+git clone https://github.com/Suyalvivek/Task-Management.git
 cd team-management
 ```
 
