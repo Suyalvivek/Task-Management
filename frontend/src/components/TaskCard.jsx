@@ -6,7 +6,7 @@ import { Trash2, Calendar, User } from 'lucide-react';
 
 const STATUS_OPTIONS = ['TODO', 'IN_PROGRESS', 'DONE'];
 
-export default function TaskCard({ task, projectId, role, onUpdate, onDelete }) {
+export default function TaskCard({ task, projectId, role, members = [], onUpdate, onDelete }) {
   const [loading, setLoading] = useState(false);
 
   const handleStatusChange = async (e) => {
@@ -17,7 +17,19 @@ export default function TaskCard({ task, projectId, role, onUpdate, onDelete }) 
       toast.success('Status updated');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to update status');
-      console.error("Status update error:", err.response?.data || err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAssigneeChange = async (e) => {
+    setLoading(true);
+    try {
+      const updated = await taskApi.update(projectId, task.id, { assigneeId: e.target.value || null });
+      onUpdate(updated.data);
+      toast.success('Assignee updated');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update assignee');
     } finally {
       setLoading(false);
     }
@@ -42,15 +54,35 @@ export default function TaskCard({ task, projectId, role, onUpdate, onDelete }) 
               {overdue && ' · Overdue'}
             </span>
           )}
-          {task.assignee && (
+          {task.assignee ? (
             <span className="task-card-assignee">
               <div className="avatar sm">{getInitials(task.assignee.name)}</div>
               {task.assignee.name}
+            </span>
+          ) : (
+            <span className="task-card-assignee" style={{ color: 'var(--text-muted)' }}>
+              <User size={12} style={{ marginRight: 4 }} /> Unassigned
             </span>
           )}
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8, flexShrink: 0 }}>
+        {role === 'ADMIN' && (
+          <select
+            className="form-input"
+            style={{ width: 'auto', padding: '4px 8px', fontSize: '0.78rem' }}
+            value={task.assigneeId || ''}
+            onChange={handleAssigneeChange}
+            disabled={loading}
+            id={`task-assignee-${task.id}`}
+            title="Reassign task"
+          >
+            <option value="">Unassigned</option>
+            {members.map(({ user: u }) => (
+              <option key={u.id} value={u.id}>{u.name}</option>
+            ))}
+          </select>
+        )}
         <select
           className="form-input"
           style={{ width: 'auto', padding: '4px 8px', fontSize: '0.78rem' }}
@@ -58,6 +90,7 @@ export default function TaskCard({ task, projectId, role, onUpdate, onDelete }) 
           onChange={handleStatusChange}
           disabled={loading}
           id={`task-status-${task.id}`}
+          title="Change status"
         >
           {STATUS_OPTIONS.map(s => (
             <option key={s} value={s}>{STATUS_LABELS[s]}</option>

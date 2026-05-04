@@ -176,6 +176,7 @@ export default function ProjectDetail() {
                   task={task}
                   projectId={projectId}
                   role={myMembership?.role}
+                  members={members}
                   onUpdate={onTaskUpdate}
                   onDelete={onDeleteTask}
                 />
