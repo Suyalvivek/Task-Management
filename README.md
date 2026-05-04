@@ -2,6 +2,12 @@
 
 TaskFlow is a full-stack, role-based collaborative task management web application designed to help teams organize projects, assign tasks, and track their progress in real-time. It features a modern, clean UI with light/dark mode support and a robust RESTful backend.
 
+## 🔗 Live Demo & URLs
+
+* **Frontend (Live App):** [https://task-management-production-1210.up.railway.app/](https://task-management-production-1210.up.railway.app/)
+* **Backend API:** [https://task-magement-backend.up.railway.app/](https://task-magement-backend.up.railway.app/)
+* **API Health Check:** [https://task-magement-backend.up.railway.app/api/health](https://task-magement-backend.up.railway.app/api/health)
+
 ## 🚀 Key Features
 
 * **User Authentication:** Secure signup and login using JWT (JSON Web Tokens) and bcrypt password hashing.
@@ -74,3 +80,4 @@ npm run dev
 3. **Frontend:** Deploy the `frontend` directory to Railway. Set `VITE_API_URL` to your newly deployed backend URL. Change the build command to `npm run build` and ensure the output directory is configured correctly for Vite (`dist`).
 
 ## 🎥 Demo Video
+[Link to your 2-5 minute demo video goes here]
